@@ -1,0 +1,37 @@
+name: Publish Packages
+on:
+  push:
+    branches:
+      - twok-fork
+
+jobs:
+  push_new_version:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+      # pulls all tags (needed for lerna / semantic release to correctly version)
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+          registry-url: "https://npm.2kweb.online"
+      - name: Install packages
+        run: npm i
+      - name: Bump versions, publish packages
+        run: |
+          echo ";registry=https://npm.2kweb.online" >> .npmrc
+          echo "//npm.2kweb.online/:_authToken=${VERDACCIO_TOKEN}" >> .npmrc
+          echo "//npm.2kweb.online/:always-auth=true" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${GH_PACKAGES_TOKEN}" >> .npmrc
+          echo "@2k-web:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "@take-two-t2gp:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "@2kweb:registry=https://npm.2kweb.online/" >> .npmrc
+          echo "always-auth=true" >> .npmrc
+          npm publish --registry https://npm.2kweb.online
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.VERDACCIO_TOKEN}}
+          VERDACCIO_TOKEN: ${{secrets.VERDACCIO_TOKEN}}
+          GH_PACKAGES_TOKEN: ${{secrets.GH_PACKAGES_TOKEN}}
