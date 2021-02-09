@@ -1,6 +1,6 @@
 {
-  "name": "require-extension-hooks-vue",
-  "version": "3.0.0",
+  "name": "@2kweb/require-extension-hooks-vue",
+  "version": "4.0.0",
   "description": "Simple server parser for .vue files",
   "main": "src/index.js",
   "scripts": {
