@@ -16,9 +16,9 @@ module.exports = ({ content, filename }) => {
   sourceMap.applySourceMap(scriptMap, filename); //does this work?
   sourceMap.applySourceMap(templateMap, filename); //does this work?
 
-  const content = `${
+  const result = `${
     template.code
   } ${script.content.replace("export default", "const __sfc_main__ =")}\n__sfc_main__.render = render;\nexport default __sfc_main__;`;
 
-  return { content };
+  return { content: result };
 };
